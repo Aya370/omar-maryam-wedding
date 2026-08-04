@@ -1084,12 +1084,6 @@
         شاركنا فرحتك وأرسل كلمة حب للعروسين الكريمين 💛
       </p>
       <div class="congrats-card">
-        <div class="congrats-messages" id="congrats-list">
-          <div class="congrats-empty" id="congrats-empty">
-            🕊️ كن أول من يهنئ العروسين!
-          </div>
-        </div>
-
         <div class="congrats-input-row">
           <div>
             <label class="rsvp-msg-label">اسمك</label>
@@ -1193,7 +1187,6 @@ function openInvitation(e) {
   setTimeout(() => {
     screen.classList.add('hidden');
     document.getElementById('card').classList.add('visible');
-    loadCongrats(); // load saved congrats when card opens
   }, 750);
 }
 
@@ -1248,30 +1241,6 @@ function submitSimpleRSVP(val) {
 }
 
 // ===================== CONGRATS → Supabase =====================
-async function loadCongrats() {
-  const { data, error } = await sb
-    .from('congrats')
-    .select('name, message, created_at')
-    .order('created_at', { ascending: true });
-  if (error) { console.warn('Load congrats error:', error.message); return; }
-  renderCongrats(data || []);
-}
-
-function renderCongrats(items) {
-  const list  = document.getElementById('congrats-list');
-  const empty = document.getElementById('congrats-empty');
-  if (!items || items.length === 0) { empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  list.innerHTML = '';
-  items.forEach(item => {
-    const el = document.createElement('div');
-    el.className = 'congrats-msg-item';
-    el.innerHTML = `<span class="msg-sender">💛 ${item.name}</span><span class="msg-text">${item.message}</span>`;
-    list.appendChild(el);
-  });
-  list.scrollTop = list.scrollHeight;
-}
-
 async function sendCongrats() {
   const name = document.getElementById('congrats-name').value.trim();
   const text = document.getElementById('congrats-text').value.trim();
@@ -1296,7 +1265,6 @@ async function sendCongrats() {
 
   document.getElementById('congrats-name').value = '';
   document.getElementById('congrats-text').value = '';
-  await loadCongrats();
   createSparkle(window.innerWidth/2, window.innerHeight * .65);
 
   btn.textContent = '✅ تم إرسال تهنئتك!';
