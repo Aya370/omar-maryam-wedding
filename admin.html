@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة تحكم — زفاف عمر & مريم</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: 'Tajawal', sans-serif;
+  background: linear-gradient(135deg, #FFF0E0, #FFE4CC, #FFD4B8);
+  min-height: 100vh;
+  direction: rtl;
+}
+
+/* ===== LOGIN ===== */
+#login-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a0f07, #2d1810);
+  z-index: 100;
+}
+.login-card {
+  background: rgba(255,248,240,.97);
+  border-radius: 28px;
+  padding: 48px 36px;
+  width: min(380px, 90vw);
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0,0,0,.35);
+}
+.login-logo { font-size: 3rem; margin-bottom: 12px; }
+.login-title {
+  font-family: 'Amiri', serif;
+  font-size: 1.6rem;
+  color: #4A2B1A;
+  margin-bottom: 6px;
+}
+.login-sub {
+  font-size: .9rem;
+  color: #8a7560;
+  margin-bottom: 32px;
+}
+.login-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1.5px solid rgba(185,150,90,.4);
+  border-radius: 14px;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1rem;
+  color: #4A2B1A;
+  background: #fffaf5;
+  outline: none;
+  text-align: center;
+  letter-spacing: 4px;
+  margin-bottom: 16px;
+  transition: border-color .2s;
+}
+.login-input:focus { border-color: #E8965A; }
+.login-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #E8965A, #FF6B6B);
+  color: #fff;
+  font-family: 'Tajawal', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+  box-shadow: 0 6px 20px rgba(232,150,90,.35);
+}
+.login-btn:hover { transform: translateY(-2px); }
+.login-error {
+  color: #c0392b;
+  font-size: .88rem;
+  margin-top: 10px;
+  display: none;
+}
+
+/* ===== DASHBOARD ===== */
+#dashboard {
+  display: none;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 20px 60px;
+}
+.dash-header {
+  text-align: center;
+  margin-bottom: 36px;
+  padding: 32px 24px;
+  background: rgba(255,255,255,.8);
+  border-radius: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.08);
+}
+.dash-title {
+  font-family: 'Amiri', serif;
+  font-size: clamp(1.4rem,4vw,2rem);
+  color: #4A2B1A;
+  margin-bottom: 4px;
+}
+.dash-sub { color: #8a7560; font-size: .9rem; }
+
+/* Stats */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.stat-box {
+  background: rgba(255,255,255,.85);
+  border-radius: 20px;
+  padding: 24px 16px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,.07);
+  border: 1px solid rgba(185,150,90,.2);
+}
+.stat-num {
+  font-family: 'Amiri', serif;
+  font-size: 2.5rem;
+  font-weight: 700;
+  display: block;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.stat-num.attending { color: #4A7A2A; }
+.stat-num.not-attending { color: #c0392b; }
+.stat-num.congrats-num { color: #E8965A; }
+.stat-label { font-size: .85rem; color: #8a7560; }
+
+/* Section */
+.section-card {
+  background: rgba(255,255,255,.85);
+  border-radius: 22px;
+  padding: 28px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px rgba(0,0,0,.07);
+  border: 1px solid rgba(185,150,90,.2);
+}
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(185,150,90,.2);
+}
+.section-head h2 {
+  font-family: 'Amiri', serif;
+  font-size: 1.3rem;
+  color: #4A2B1A;
+}
+.section-icon { font-size: 1.5rem; }
+
+/* RSVP Table */
+.rsvp-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.rsvp-table th {
+  background: rgba(232,150,90,.12);
+  color: #7A4A2A;
+  font-size: .82rem;
+  font-weight: 700;
+  padding: 10px 14px;
+  text-align: right;
+  border-bottom: 1.5px solid rgba(185,150,90,.25);
+}
+.rsvp-table td {
+  padding: 12px 14px;
+  font-size: .9rem;
+  color: #4A2B1A;
+  border-bottom: 1px solid rgba(185,150,90,.12);
+}
+.rsvp-table tr:last-child td { border-bottom: none; }
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: .8rem;
+  font-weight: 700;
+}
+.badge-yes { background: rgba(74,122,42,.12); color: #4A7A2A; }
+.badge-no  { background: rgba(192,57,43,.1);  color: #c0392b; }
+
+/* Congrats list */
+.congrats-item {
+  background: rgba(255,248,240,.8);
+  border: 1px solid rgba(185,150,90,.2);
+  border-radius: 16px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+.congrats-item:last-child { margin-bottom: 0; }
+.congrats-name {
+  font-weight: 700;
+  color: #E8965A;
+  font-size: .88rem;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.congrats-date {
+  font-size: .75rem;
+  color: #8a7560;
+  margin-right: auto;
+  font-weight: 400;
+}
+.congrats-text {
+  color: #4A2B1A;
+  font-size: .95rem;
+  line-height: 1.7;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 32px;
+  color: #8a7560;
+  font-size: .95rem;
+}
+
+/* Refresh */
+.refresh-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  border: 1.5px solid rgba(185,150,90,.4);
+  border-radius: 50px;
+  background: transparent;
+  color: #7A4A2A;
+  font-family: 'Tajawal', sans-serif;
+  font-size: .9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s;
+  margin: 0 auto 28px;
+}
+.refresh-btn:hover { background: rgba(185,150,90,.1); }
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 24px;
+  color: #8a7560;
+  font-size: .9rem;
+}
+
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: 1fr; }
+  .rsvp-table th:nth-child(3),
+  .rsvp-table td:nth-child(3) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">💍</div>
+    <h1 class="login-title">لوحة التحكم</h1>
+    <p class="login-sub">زفاف عمر & مريم — ٢١ أغسطس ٢٠٢٦</p>
+    <input class="login-input" type="password" id="pwd-input" placeholder="••••••••" onkeydown="if(event.key==='Enter') checkPassword()">
+    <button class="login-btn" onclick="checkPassword()">🔓 دخول</button>
+    <p class="login-error" id="login-error">❌ كلمة المرور غلط، حاول تاني</p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="dash-header">
+    <p style="font-size:2rem;margin-bottom:8px">💍</p>
+    <h1 class="dash-title">لوحة تحكم الدعوة</h1>
+    <p class="dash-sub">زفاف عمر & مريم — ٢١ أغسطس ٢٠٢٦</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <span class="stat-num attending" id="stat-yes">-</span>
+      <span class="stat-label">✅ سيحضر</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-num not-attending" id="stat-no">-</span>
+      <span class="stat-label">❌ اعتذر</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-num congrats-num" id="stat-congrats">-</span>
+      <span class="stat-label">💐 تهنئة</span>
+    </div>
+  </div>
+
+  <button class="refresh-btn" onclick="loadAll()">🔄 تحديث البيانات</button>
+
+  <!-- RSVP -->
+  <div class="section-card">
+    <div class="section-head">
+      <span class="section-icon">✅</span>
+      <h2>تأكيدات الحضور</h2>
+    </div>
+    <div id="rsvp-content"><div class="loading">جاري التحميل...</div></div>
+  </div>
+
+  <!-- Congrats -->
+  <div class="section-card">
+    <div class="section-head">
+      <span class="section-icon">💐</span>
+      <h2>التهاني</h2>
+    </div>
+    <div id="congrats-content"><div class="loading">جاري التحميل...</div></div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://rrchqfgpvbmqmszgzsei.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_Ifyx5nhji9fL7m_y3IGhJg_TeFqgPTd';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const PASSWORD = 'omar2026';
+
+function checkPassword() {
+  const val = document.getElementById('pwd-input').value;
+  if (val === PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadAll();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('pwd-input').value = '';
+  }
+}
+
+async function loadAll() {
+  await loadRSVP();
+  await loadCongrats();
+}
+
+async function loadRSVP() {
+  const { data, error } = await sb
+    .from('rsvp')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) { console.warn(error); return; }
+
+  const yes = data.filter(r => r.attendance === 'سيحضر').length;
+  const no  = data.filter(r => r.attendance === 'اعتذر').length;
+  document.getElementById('stat-yes').textContent = yes;
+  document.getElementById('stat-no').textContent  = no;
+
+  const container = document.getElementById('rsvp-content');
+  if (!data.length) {
+    container.innerHTML = '<div class="empty-state">🕊️ لا يوجد ردود بعد</div>';
+    return;
+  }
+
+  container.innerHTML = `
+    <table class="rsvp-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>الرد</th>
+          <th>التاريخ والوقت</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${data.map((r, i) => `
+          <tr>
+            <td>${i + 1}</td>
+            <td><span class="badge ${r.attendance === 'سيحضر' ? 'badge-yes' : 'badge-no'}">
+              ${r.attendance === 'سيحضر' ? '✅ سيحضر' : '❌ اعتذر'}
+            </span></td>
+            <td style="font-size:.82rem;color:#8a7560">${new Date(r.created_at).toLocaleString('ar-EG')}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
+}
+
+async function loadCongrats() {
+  const { data, error } = await sb
+    .from('congrats')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) { console.warn(error); return; }
+
+  document.getElementById('stat-congrats').textContent = data.length;
+
+  const container = document.getElementById('congrats-content');
+  if (!data.length) {
+    container.innerHTML = '<div class="empty-state">🕊️ لا توجد تهاني بعد</div>';
+    return;
+  }
+
+  container.innerHTML = data.map(c => `
+    <div class="congrats-item">
+      <div class="congrats-name">
+        💛 ${c.name}
+        <span class="congrats-date">${new Date(c.created_at).toLocaleString('ar-EG')}</span>
+      </div>
+      <div class="congrats-text">${c.message}</div>
+    </div>
+  `).join('');
+}
+</script>
+</body>
+</html>
