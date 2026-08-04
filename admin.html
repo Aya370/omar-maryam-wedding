@@ -245,6 +245,24 @@ body {
 }
 .refresh-btn:hover { background: rgba(185,150,90,.1); }
 
+.delete-btn {
+  margin-right: auto;
+  padding: 7px 16px;
+  border: 1.5px solid rgba(192,57,43,.35);
+  border-radius: 50px;
+  background: rgba(192,57,43,.08);
+  color: #c0392b;
+  font-family: 'Tajawal', sans-serif;
+  font-size: .82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+}
+.delete-btn:hover {
+  background: rgba(192,57,43,.18);
+  border-color: #c0392b;
+}
+
 /* Loading */
 .loading {
   text-align: center;
@@ -305,6 +323,7 @@ body {
     <div class="section-head">
       <span class="section-icon">✅</span>
       <h2>تأكيدات الحضور</h2>
+      <button class="delete-btn" onclick="deleteAll('rsvp')">🗑️ مسح الكل</button>
     </div>
     <div id="rsvp-content"><div class="loading">جاري التحميل...</div></div>
   </div>
@@ -314,6 +333,7 @@ body {
     <div class="section-head">
       <span class="section-icon">💐</span>
       <h2>التهاني</h2>
+      <button class="delete-btn" onclick="deleteAll('congrats')">🗑️ مسح الكل</button>
     </div>
     <div id="congrats-content"><div class="loading">جاري التحميل...</div></div>
   </div>
@@ -338,6 +358,20 @@ function checkPassword() {
     document.getElementById('login-error').style.display = 'block';
     document.getElementById('pwd-input').value = '';
   }
+}
+
+async function deleteAll(table) {
+  const name = table === 'rsvp' ? 'تأكيدات الحضور' : 'التهاني';
+  if (!confirm(`هل أنتِ متأكدة من مسح كل ${name}؟ لا يمكن التراجع!`)) return;
+
+  const { error } = await sb.from(table).delete().neq('id', 0);
+  if (error) {
+    alert('حدث خطأ أثناء المسح 😔');
+    console.warn(error);
+    return;
+  }
+  alert(`✅ تم مسح كل ${name} بنجاح`);
+  await loadAll();
 }
 
 async function loadAll() {
